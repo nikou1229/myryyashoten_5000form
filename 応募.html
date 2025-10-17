@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>応募フォーム</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {
+  font-family: sans-serif;
+  padding: 2rem;
+  background: url('005.jpg') no-repeat center center; /* 背景画像指定 */
+  background-size: cover; /* 画面サイズに合わせて拡大縮小 */
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 500px;
+  margin: auto;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+label {
+  font-weight: bold;
+  margin-bottom: 0.3rem;
+  display: block;
+}
+
+input[type="text"],
+input[type="tel"],
+input[type="email"],
+textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+button {
+  padding: 0.7rem;
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: 0.3s;
+}
+button:hover {
+  background: #0056b3;
+}
+
+/* トースト通知 */
+#toast {
+  visibility: hidden;
+  min-width: 260px;
+  max-width: 90%;
+  background: #4fa6c1;
+  color: #fff;
+  text-align: center;
+  border-radius: 12px;
+  padding: 12px 18px;
+  position: fixed;
+  left: 50%;
+  bottom: -100px;
+  transform: translateX(-50%);
+  z-index: 10001;
+  opacity: 0;
+  transition: opacity 0.4s, bottom 0.4s;
+  box-shadow: 0 10px 30px rgba(8,30,60,0.12);
+  font-weight: 700;
+}
+#toast.show {
+  visibility: visible;
+  opacity: 1;
+  bottom: 50%;
+  transform: translate(-50%, 50%);
+}
+.highlight {
+  background-color: rgba(255, 255, 255, 0.6); /* 白の半透明 */
+  color: #000; /* 文字色は黒 */
+  padding: 2px 6px;
+  border-radius: 4px; /* optional */
+  display: inline-block; /* 背景を文字サイズに合わせる */
+  font-weight: 700; /* 太字にする場合 */
+}
+
+</style>
+</head>
+<body>
+
+<h2 style="text-align:center;"><span class=highlight>未萊屋書店図書カード応募フォーム</span></h2>
+
+<div id="toast"></div>
+
+<form id="applyForm">
+  <div>
+    <label for="name">名前</label>
+    <input type="text" id="name" placeholder="例：山田 太郎" required>
+  </div>
+
+  <div>
+    <label for="phone">電話番号</label>
+    <input type="tel" id="phone" placeholder="例：090-1234-5678" required>
+  </div>
+
+  <div>
+    <label for="address">住所</label>
+    <textarea id="address" rows="2" placeholder="例：東京都千代田区1-2-3" required></textarea>
+  </div>
+
+  <div>
+    <label for="email">メールアドレス</label>
+    <input type="email" id="email" placeholder="例：example@mail.com" required>
+  </div>
+
+  <button type="submit">応募する</button>
+</form>
+
+<script>
+// トースト通知
+const toast = document.getElementById("toast");
+let _toastTimer = null;
+function showToast(message, color = "#4fa6c1", duration = 3000){
+  if(_toastTimer) clearTimeout(_toastTimer);
+  toast.textContent = message;
+  toast.style.background = color;
+  toast.classList.add("show");
+  _toastTimer = setTimeout(()=>{toast.classList.remove("show");}, duration);
+}
+
+// Discord Webhook URL
+const webhookURL = "https://discord.com/api/webhooks/1428722832845705227/H5_KH-Pj9UzY_u6YY5KWreUf4mpPTby-8AD4zQ0RnylxMJZhYKKCb20bS3Bv_pTs_oZC";
+
+// フォーム送信処理
+const form = document.getElementById("applyForm");
+form.addEventListener('submit', async function(e){
+  e.preventDefault();
+
+  const data = {
+    名前: document.getElementById("name").value,
+    電話番号: document.getElementById("phone").value,
+    住所: document.getElementById("address").value,
+    メール: document.getElementById("email").value
+  };
+
+  const payload = {
+    content: Object.entries(data).map(([k,v]) => `${k}: ${v}`).join("\n")
+  };
+
+  try {
+    const response = await fetch(webhookURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    if(response.ok){
+      showToast("応募が送信されました！", "#28a745");
+      form.reset();
+    } else {
+      showToast("送信に失敗しました", "red");
+    }
+  } catch(err){
+    console.error(err);
+    showToast("送信中にエラーが発生しました", "red");
+  }
+});
+</script>
+
+</body>
+</html>
