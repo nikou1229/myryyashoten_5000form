@@ -105,17 +105,17 @@ button:hover {
 
   <div>
     <label for="phone">電話番号</label>
-    <input type="tel" id="" placeholder="例：090-1234-5678" required>
+    <input type="tel" id="phone" placeholder="例：090-1234-5678" required>
   </div>
 
   <div>
     <label for="address">住所</label>
-    <textarea id="" rows="2" placeholder="例：東京都千代田区1-2-3" required></textarea>
+    <textarea id="adress" rows="2" placeholder="例：東京都千代田区1-2-3" required></textarea>
   </div>
 
   <div>
     <label for="email">メールアドレス</label>
-    <input type="email" id="" placeholder="例：example@mail.com" required>
+    <input type="email" id="email" placeholder="例：example@mail.com" required>
   </div>
 
   <button type="submit">応募する</button>
@@ -143,9 +143,15 @@ form.addEventListener('submit', async function(e){
 
   const data = {
     名前: document.getElementById("name").value,
+    /*
     電話番号: document.getElementById("phone").value,
     住所: document.getElementById("address").value,
     メール: document.getElementById("email").value
+    */
+    電話番号: nnn,
+    住所: nnn,
+    メール: nnn
+
   };
 
   const payload = {
